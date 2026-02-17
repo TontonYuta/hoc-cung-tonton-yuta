@@ -1,4 +1,4 @@
-import { Course, GradeLevel, Attachment, Chapter, Lesson } from './types';
+import { Course, GradeLevel, Attachment } from './types';
 import { PRO_X_COURSE } from './data/prox';
 import { PRO_Y_COURSE } from './data/proy';
 import { PRO_Z_COURSE } from './data/proz';
@@ -15,7 +15,6 @@ import { MATH_G8_COURSE } from './data/grade8';
 import { MATH_G9_COURSE } from './data/grade9';
 import { MATH_G10_COURSE } from './data/grade10';
 import { MATH_G11_COURSE } from './data/grade11';
-import { LESSON_UPDATES } from './data/LESSON_MANAGER';
 
 export const GRADES = [
   { id: 'all', label: 'Tất cả' },
@@ -29,60 +28,9 @@ export const GRADES = [
   { id: GradeLevel.University, label: 'Đại Học' },
 ];
 
-// --- HÀM XỬ LÝ CẬP NHẬT TỰ ĐỘNG ---
-// Hàm này sẽ lấy dữ liệu từ LESSON_MANAGER và ghi đè vào dữ liệu gốc
-const applyUpdatesToCourses = (courses: Course[]): Course[] => {
-  return courses.map(course => {
-    // Duyệt qua từng chương
-    const updatedChapters = course.chapters.map(chapter => {
-      // Duyệt qua từng bài học
-      const updatedLessons = chapter.lessons.map(lesson => {
-        // Kiểm tra xem bài học này có trong danh sách cập nhật không
-        const update = LESSON_UPDATES[lesson.id];
-        
-        if (update) {
-          // Tạo bản sao của attachments cũ
-          let newAttachments = [...(lesson.attachments || [])];
-
-          // Nếu có link Drive mới
-          if (update.drive && update.drive.trim() !== '') {
-             if (newAttachments.length > 0) {
-                // Nếu đã có tài liệu, cập nhật URL của TẤT CẢ tài liệu cũ thành link mới
-                // (Giả định link mới là link folder hoặc file tổng hợp)
-                newAttachments = newAttachments.map(att => ({
-                  ...att,
-                  url: update.drive
-                }));
-             } else {
-                // Nếu chưa có tài liệu, tạo mới
-                newAttachments = [{
-                  id: `att-${lesson.id}-auto`,
-                  name: 'Tài liệu bài học (Cập nhật)',
-                  type: 'pdf',
-                  url: update.drive,
-                  size: 'Drive'
-                }];
-             }
-          }
-
-          return {
-            ...lesson,
-            youtubeId: update.youtube || lesson.youtubeId, // Ưu tiên cái mới, nếu ko có thì giữ cái cũ
-            attachments: newAttachments
-          };
-        }
-        return lesson;
-      });
-
-      return { ...chapter, lessons: updatedLessons };
-    });
-
-    return { ...course, chapters: updatedChapters };
-  });
-};
-
-// --- DANH SÁCH KHÓA HỌC GỐC ---
-const RAW_COURSES: Course[] = [
+// --- DANH SÁCH KHÓA HỌC ---
+// Bạn chỉnh sửa nội dung bài học trực tiếp trong các file tại thư mục /data
+export const MOCK_COURSES: Course[] = [
   // Lớp 12 & Luyện thi
   PRO_X_COURSE,
   PRO_Y_COURSE,
@@ -105,9 +53,6 @@ const RAW_COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
   INTRO_IT_COURSE,
 ];
-
-// --- XUẤT RA DANH SÁCH ĐÃ ĐƯỢC CẬP NHẬT ---
-export const MOCK_COURSES = applyUpdatesToCourses(RAW_COURSES);
 
 // --- TÀI LIỆU THAM KHẢO CHUNG ---
 export const GLOBAL_REFERENCES: Attachment[] = [

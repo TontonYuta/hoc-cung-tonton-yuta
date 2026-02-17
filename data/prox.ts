@@ -15,7 +15,7 @@ const PRO_X_CHAPTERS: Chapter[] = [
         youtubeId: 'e0PkXP7hIMk', 
         duration: '60:00',
         attachments: [
-            { id: 'att-c1-l1-1', name: 'Tài liệu bài giảng (PDF)', type: 'pdf', url: 'https://drive.google.com/file/d/1ZvY0jrVFFGgSC3vOS1LNCBlWx0sb4vY0/view', size: 'PDF' },
+            { id: 'att-c1-l1-1', name: 'Tài liệu bài giảng (PDF)', type: 'pdf', url: DRIVE_LINK, size: 'PDF' },
             { id: 'att-c1-l1-2', name: 'Bài tập tự luyện', type: 'doc', url: DRIVE_LINK, size: 'DOCX' }
         ],
       },
